@@ -936,6 +936,8 @@ ul.dropdown-menu li {
   flex: 1 30%;
   overflow: hidden;
   position: relative;
+  background-position: center center;
+  background-size: cover;
 }
 
 .card-img-preview {
@@ -1214,6 +1216,12 @@ ul#countdown li .label {
   .start {
     padding: 9em 0 5em 0;
   }
+
+  .card-img {
+    flex: auto;
+    height: 50vh;
+  }
+  
 
   .start h1 {
     font-size: 30px;
