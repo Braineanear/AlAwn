@@ -21,7 +21,6 @@
 	$('.team-slider').slick({
 		slidesToShow: 3,
 		slidesToScroll: 1,
-		// autoplay: true,
 		autoplaySpeed: 2000,
 		responsive: [{
 				breakpoint: 991,
@@ -39,25 +38,25 @@
 	});
 
 	$('.customer-logos').slick({
-        slidesToShow: 6,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 500,
-        arrows: false,
-        dots: false,
-        pauseOnHover: false,
-        responsive: [{
-            breakpoint: 768,
-            settings: {
-                slidesToShow: 4
-            }
-        }, {
-            breakpoint: 520,
-            settings: {
-                slidesToShow: 3
-            }
-        }]
-    });
+		slidesToShow: 6,
+		slidesToScroll: 1,
+		autoplay: true,
+		autoplaySpeed: 500,
+		arrows: false,
+		dots: false,
+		pauseOnHover: false,
+		responsive: [{
+			breakpoint: 768,
+			settings: {
+				slidesToShow: 4
+			}
+		}, {
+			breakpoint: 520,
+			settings: {
+				slidesToShow: 3
+			}
+		}]
+	});
 
 	new WOW().init();
 
@@ -187,5 +186,84 @@
 
 	TyperSetup();
 
+	const nodes = Array.from(document.getElementsByClassName("time-title"));
+	const cache = {
+		viewport: {},
+		rects: []
+	};
+
+	window.addEventListener("load", init);
+
+	function init() {
+		recache();
+		document.addEventListener("scroll", throttle(scrollCheck, 10));
+		window.addEventListener("resize", debounce(recache, 50));
+	};
+
+	function recache() {
+		cache.viewport = {
+			width: window.innerWidth,
+			height: window.innerHeight
+		};
+		nodes.forEach((node, i) => {
+			cache.rects[i] = rect(node);
+		});
+
+		scrollCheck();
+	}
+
+	function scrollCheck() {
+		const offset = getScrollOffset();
+		const midline = cache.viewport.height * 0.3;
+		cache.rects.forEach((rect, i) => {
+			nodes[i].classList.toggle("active", rect.y - offset.y < midline);
+		});
+	};
+
+	function getScrollOffset() {
+		return {
+			x: window.pageXOffset,
+			y: window.pageYOffset
+		};
+	};
+
+	function throttle(fn, limit, context) {
+		let wait;
+		return function () {
+			context = context || this;
+			if (!wait) {
+				fn.apply(context, arguments);
+				wait = true;
+				return setTimeout(function () {
+					wait = false;
+				}, limit);
+			}
+		};
+	};
+
+	function debounce(fn, limit, u) {
+		let e;
+		return function () {
+			const i = this;
+			const o = arguments;
+			const a = u && !e;
+			clearTimeout(e),
+				(e = setTimeout(function () {
+					(e = null), u || fn.apply(i, o);
+				}, limit)),
+				a && fn.apply(i, o);
+		};
+
+	}
+
+	function rect(e) {
+		const o = getScrollOffset();
+		const r = e.getBoundingClientRect();
+
+		return {
+			x: r.left + o.x,
+			y: r.top + o.y
+		};
+	};
 
 })(jQuery);
